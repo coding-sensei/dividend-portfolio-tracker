@@ -27,3 +27,11 @@ Filter and Sort by Pay Date
 
 `=QUERY(latest_dividends!A:I, "SELECT A,E,D,B WHERE D IS NOT NULL AND E >= date'"&TEXT(TODAY(),"yyyy-mm-dd")&"' ORDER BY D",-1)`
 
+## populate_holdings.gs
+
+This is the script that will populate the portfolio holdings into the `Holdings` sheet.
+The portfolio holdings are easily copied from the Personal Capital Website using the Tampermonkey script with a click of a button.
+
+## utilities.gs
+
+This is the script that will hold any common functionality that could be reused by other scripts.
