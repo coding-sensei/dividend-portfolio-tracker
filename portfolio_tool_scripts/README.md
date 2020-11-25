@@ -36,23 +36,23 @@ The portfolio holdings are easily copied from the Personal Capital Website using
 
 Setup Projected Annual Income Table
 
-For Annual Income
+For Annual Dividend Income
 
 `=SUMIF(Holdings!J2:J,"FALSE",Holdings!I2:I)`
 
-For Monthly Average Income
+For Monthly Average Dividend Income
 
 `=AnnualIncomeResult/12` or `=SUMIF(Holdings!J2:J,"FALSE",Holdings!I2:I)/12`
 
-For Weekly Average Income
+For Weekly Average Dividend Income
 
 `=AnnualIncomeResult/52` or `=SUMIF(Holdings!J2:J,"FALSE",Holdings!I2:I)/52`
 
-For Daily Average Income
+For Daily Average Dividend Income
 
 `=AnnualIncomeResult/365` or `=SUMIF(Holdings!J2:J,"FALSE",Holdings!I2:I)/365`
 
-For Hourly Average Income
+For Hourly Average Dividend Income
 
 `=AnnualIncomeResult/8760` or `=SUMIF(Holdings!J2:J,"FALSE",Holdings!I2:I)/8760`
 
