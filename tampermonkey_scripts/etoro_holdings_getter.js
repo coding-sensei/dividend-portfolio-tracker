@@ -49,7 +49,7 @@ function populate_ticker_map(headers, row) {
     var info = new Map();
 
     var market = row.getElementsByClassName("table-first-name")[0].textContent.trim();
-    var shares = row.querySelector("a > ui-table-body-slot > ui-table-cell:nth-child(1) > div > span").textContent.trim();
+    var shares = row.querySelector("a > ui-table-body-slot > ui-table-cell:nth-child(1) > div > span").textContent.trim().replace(/,/g, "");
     var invested = row.querySelector("a > ui-table-body-slot > ui-table-cell:nth-child(3) > span").textContent.trim().replace(/,/g, "").replace(/\$/g, "");
     var price = invested / shares;
     var value = row.querySelector("a > ui-table-body-slot > ui-table-cell:nth-child(6) > span").textContent.trim();

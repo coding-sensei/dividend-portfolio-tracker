@@ -14,3 +14,7 @@ the GoogleSheets or any other program that wants to use the JSON data.
 This script will run on etoro.com/portfolio and place a grey `Copy Holdings` button next to navbar buttons. 
 When the button is clicked, the button will copy the holdings into JSON data to your clipboard which can then 
 be pasted into the GoogleSheets or any other program that wants to use the JSON data.
+
+###Known issues: 
+- currency won't calculate correct price
+- holdings from copies won't be included
