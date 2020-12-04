@@ -16,5 +16,5 @@ When the button is clicked, the button will copy the holdings into JSON data to 
 be pasted into the GoogleSheets or any other program that wants to use the JSON data.
 
 ###Known issues: 
-- currency won't calculate correct price
-- holdings from copies won't be included
+- Currency won't always calculate correct price
+- You'll not get holdings from people you're copying
