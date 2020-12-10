@@ -154,7 +154,15 @@ function write_to_sheet(json) {
     if (json.CashDividends.length == 0) {
         return
     }
-    var ticker = json.Security.Symbol;
+
+    var ticker = "";
+    if (json.IdentifierType == "Symbol") {
+      ticker = json.Identifier;
+    }
+    else {
+      ticker = json.Security.Symbol;
+    }
+    
     var json = json.CashDividends;
     var ws = get_sheet_object(DIVIDEND_SHEET_NAME);
 
