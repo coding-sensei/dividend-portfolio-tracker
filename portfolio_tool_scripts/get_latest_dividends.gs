@@ -163,16 +163,15 @@ function write_to_sheet(json) {
     else {
       ticker = json.Security.Symbol;
     }
-    
-    var json = json.CashDividends;
+
     var name = json.Security.Name;
+    var json_cash_dividends = json.CashDividends;
     var ws = get_sheet_object(DIVIDEND_SHEET_NAME);
 
-
-    for (var i = 0; i < json.length; i++) {
-        var headerRow = Object.keys(json[0]);
+    for (var i = 0; i < json_cash_dividends.length; i++) {
+        var headerRow = Object.keys(json_cash_dividends[0]);
         var row = headerRow.map(function(key) {
-            return json[i][key]
+            return json_cash_dividends[i][key]
         });
         row.unshift(ticker);
         row.push(name);
