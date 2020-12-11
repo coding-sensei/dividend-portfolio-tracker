@@ -62,13 +62,14 @@ function get_stock_history(token, ticker) {
 
 function clear_sheet() {
     var ws = get_sheet_object(DIVIDEND_SHEET_NAME);
-    ws.getRange("A:O").clear();
+    ws.getRange("A:O").clearContent();
 }
 
 function create_header(ticker_data) {
     var ws = get_sheet_object(DIVIDEND_SHEET_NAME);
     var headerRow = Object.keys(ticker_data.CashDividends[0]);
     headerRow.unshift("Ticker");
+    headerRow.push("Name");
     ws.appendRow(headerRow);
 }
 
@@ -156,6 +157,7 @@ function write_to_sheet(json) {
     }
     var ticker = json.Security.Symbol;
     var json = json.CashDividends;
+    var name = json.Security.Name;
     var ws = get_sheet_object(DIVIDEND_SHEET_NAME);
 
 
@@ -165,6 +167,7 @@ function write_to_sheet(json) {
             return json[i][key]
         });
         row.unshift(ticker);
+        row.push(name);
         ws.appendRow(row);
     }
 
