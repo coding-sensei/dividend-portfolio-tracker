@@ -6,13 +6,13 @@ var SETTINGS_SHEET_NAME = "Settings";
 
 
 function initMenu() {
-    var ui = SpreadsheetApp.getUi();
-    var menu = ui.createMenu("Portfolio Tools");
-    menu.addItem("Update Portfolio Holdings", "populate_holdings");
-    menu.addItem("Get Latest Dividends", "get_latest_dividends");
-    menu.addToUi();
+  var ui = SpreadsheetApp.getUi();
+  var menu = ui.createMenu("Portfolio Tools");
+  menu.addItem("Update Portfolio Holdings", "populate_holdings");
+  menu.addItem("Get Latest Dividends", "get_latest_dividends");
+  menu.addToUi();
 }
 
 function onOpen() {
-    initMenu();
+  initMenu();
 }
