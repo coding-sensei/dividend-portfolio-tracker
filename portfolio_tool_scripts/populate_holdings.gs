@@ -33,7 +33,7 @@ function populate_holdings() {
 
   //Writing to holdings spreadsheet
   var ws = get_sheet_object(HOLDINGS_SHEET_NAME);
-  ws.getRange("A:K").clear();
+  ws.getRange("A:J").clear();
 
   var headerRow = Object.keys(holdings[0]);
   ws.appendRow(headerRow);
@@ -56,7 +56,7 @@ function get_latest_dividends_data() {
 
   var header_list = ws.getRange(1,1, 1, ws.getRange("A1").getDataRegion().getLastColumn()).getValues()[0];
 
-  var ticker_row_list = ws.getRange(2,1, ws.getRange("A2").getDataRegion().getLastRow(), 12).getValues();
+  var ticker_row_list = ws.getRange(2,1, ws.getRange("A2").getDataRegion().getLastRow(), header_list.length).getValues();
 
   var ticker_data = {};
 
@@ -76,5 +76,3 @@ function get_latest_dividends_data() {
 
   return ticker_data
 }
-
-

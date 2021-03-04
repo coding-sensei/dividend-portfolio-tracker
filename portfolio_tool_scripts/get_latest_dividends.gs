@@ -60,13 +60,14 @@ function get_stock_history(token, ticker) {
 
 function clear_sheet() {
   var ws = get_sheet_object(DIVIDEND_SHEET_NAME);
-  ws.getRange("A:O").clear();
+  ws.getRange("A:O").clearContent();
 }
 
 function create_header(ticker_data) {
   var ws = get_sheet_object(DIVIDEND_SHEET_NAME);
   var headerRow = Object.keys(ticker_data.CashDividends[0]);
   headerRow.unshift("Ticker");
+  headerRow.push("Name");
   ws.appendRow(headerRow);
 }
 
@@ -149,23 +150,34 @@ function calculate_annual_payout(dividend_amount, frequency) {
 }
 
 function write_to_sheet(json) {
-  if(json.CashDividends.length == 0){
-    return
-  }
-  var ticker = json.Security.Symbol;
-  var json = json.CashDividends;
-  var ws = get_sheet_object(DIVIDEND_SHEET_NAME);
+    if (json.CashDividends.length == 0) {
+        return
+    }
 
+    var ticker = "";
+    if (json.IdentifierType == "Symbol") {
+      ticker = json.Identifier;
+    }
+    else {
+      ticker = json.Security.Symbol;
+    }
 
-  for (var i= 0; i < json.length; i++) {
-    var headerRow = Object.keys(json[0]);
-    var row = headerRow.map(function(key){ return json[i][key]});
-    row.unshift(ticker);
-    ws.appendRow(row);
-  }
+    var name = json.Security.Name;
+    var json_cash_dividends = json.CashDividends;
+    var ws = get_sheet_object(DIVIDEND_SHEET_NAME);
 
-  //Set columns to currency format
-  var columns = ws.getRange("L2:L");
-  columns.setNumberFormat("$#,##0.00;$(#,##0.00)");
+    for (var i = 0; i < json_cash_dividends.length; i++) {
+        var headerRow = Object.keys(json_cash_dividends[0]);
+        var row = headerRow.map(function(key) {
+            return json_cash_dividends[i][key]
+        });
+        row.unshift(ticker);
+        row.push(name);
+        ws.appendRow(row);
+    }
+
+    //Set columns to currency format
+    var columns = ws.getRange("L2:L");
+    columns.setNumberFormat("$#,##0.00;$(#,##0.00)");
 
 }
