@@ -33,7 +33,7 @@ function populate_holdings() {
 
   //Writing to holdings spreadsheet
   var ws = get_sheet_object(HOLDINGS_SHEET_NAME);
-  ws.getRange("A:J").clear();
+  ws.getRange("A:K").clear();
 
   var headerRow = Object.keys(holdings[0]);
   ws.appendRow(headerRow);
