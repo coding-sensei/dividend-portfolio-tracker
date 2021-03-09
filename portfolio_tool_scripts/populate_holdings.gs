@@ -29,6 +29,8 @@ function populate_holdings() {
     {
       holdings[i]["Dividend Suspended"] = false;
     }
+
+    delete holdings[i]["Change"];
   }
 
   //Writing to holdings spreadsheet
