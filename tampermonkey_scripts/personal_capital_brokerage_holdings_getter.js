@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Personal Capital Holdings Getter
 // @namespace    http://tampermonkey.net/
-// @version      1.1.0
+// @version      1.1.1
 // @description  This will create a button on the holdings tab so that the current positions can be copied to the clipboard as JSON for easy import to GoogleSheets or any other program!
 // @author       Coding Sensei
 // @include      /^https://home\.personalcapital\.com/page/login/app*/
@@ -132,14 +132,13 @@ function create_all_account_copy_button() {
 }
 
 waitForKeyElements (
-    "#accountDetails > div > div.appTemplate > div.datagridSection > div > div.pc-search-input.pc-u-pl-",
+    "#accountDetails > div > div.appTemplate > div.datagridSection > div > div:nth-child(1) > div > div > div > label",
     create_single_account_copy_button,
     false
 );
 
 waitForKeyElements (
-    "#holdings > div > div.gridFrame.offset > div > div.pc-search-input.pc-u-pl-",
+    "#holdings > div > div.gridFrame.offset > div > div:nth-child(1) > div.pc-search-input.pc-u-pl- > div > div > label",
     create_all_account_copy_button,
     false
 );
-
