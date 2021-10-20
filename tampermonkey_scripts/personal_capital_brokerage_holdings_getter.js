@@ -1,13 +1,13 @@
 // ==UserScript==
-// @name         Personal Capital Holdings Getter
+// @name         Personal Capital Holdings Getter Requests (Testing)
 // @namespace    http://tampermonkey.net/
-// @version      1.1.1
+// @version      1.0
 // @description  This will create a button on the holdings tab so that the current positions can be copied to the clipboard as JSON for easy import to GoogleSheets or any other program!
 // @author       Coding Sensei
 // @include      /^https://home\.personalcapital\.com/page/login/app*/
 // @require      http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
-// @grant        none
+// @grant        GM.xmlHttpRequest
 // ==/UserScript==
 
 
@@ -45,9 +45,9 @@ function populate_ticker_map(headers, ticker_data) {
     return info
 }
 
-function get_table_holdings(class_name_element) {
+function get_table_holdings() {
 
-    let holdingsTable = document.getElementsByClassName(class_name_element)[0];
+    let holdingsTable = document.getElementsByClassName("table table--hoverable table--primary table__body--primary pc-holdings-grid qa-datagrid-rows centi pc-holdings-grid--account-details table--actionable")[0];
 
     console.log(holdingsTable);
 
@@ -87,58 +87,73 @@ function convert_holdings_to_json(positions) {
     return JSON.stringify(json_holdings)
 }
 
-function add_copy_button(function_call_on_click) {
+
+function get_json_holdings() {
+
+    let data = '%5B79701341%5D&' + 'lastServerChangeId=-1&csrf=' + csrf + '&apiClient=WEB'
+    console.log(data);
+    GM.xmlHttpRequest({
+        method: "POST",
+        url: "https://home.personalcapital.com/api/invest/getHoldings",
+        data: data,
+        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        onload: function(response) {
+            console.log(response.responseText);
+        }
+    });
+    var json_holdings = {
+        holdings:[]
+    };
+    for (const stock of positions) {
+        json_holdings.holdings.push(mapToObj(stock));
+    }
+
+    return JSON.stringify(json_holdings)
+}
+
+function set_to_clipboard(text) {
+    let temp = document.createElement('textarea');
+    document.body.appendChild(temp);
+    temp.value = text;
+    temp.select();
+    document.execCommand('copy');
+    temp.remove();
+}
+
+function copy() {
+
+//    let data = 'lastServerChangeId=-1&csrf=' + csrf + '&apiClient=WEB'
+    let data = 'userAccountIds=%5B79701341%5D&' + 'lastServerChangeId=-1&csrf=' + csrf + '&apiClient=WEB'
+    console.log(data);
+    GM.xmlHttpRequest({
+        method: "POST",
+        url: "https://home.personalcapital.com/api/invest/getHoldings",
+        data: data,
+        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        onload: function(response) {
+            console.log(response.responseText);
+            set_to_clipboard(response.responseText);
+            alert("Finished copying");
+        }
+    });
+
+}
+
+function add_copy_button() {
     let searchObj = document.getElementsByClassName("pc-input-group  pc-input-group--with-prefix")[0];
     let btn = document.createElement("button");
     btn.innerHTML = "Copy Holdings";
     btn.className = "copyBtn";
     btn.onclick = () => {
-        function_call_on_click()
-        alert("Finished copying");
+        copy();
     }
     console.log(searchObj);
 
     searchObj.insertBefore(btn, searchObj[0]);
 }
 
-function copy_single_holdings_account() {
-    var html_table_element = "table table--hoverable table--primary table__body--primary pc-holdings-grid qa-datagrid-rows centi pc-holdings-grid--account-details table--actionable";
-    let temp = document.createElement('textarea');
-    document.body.appendChild(temp);
-    var holdings = get_table_holdings(html_table_element);
-    temp.value = convert_holdings_to_json(holdings);
-    temp.select();
-    document.execCommand('copy');
-    temp.remove();
-}
-
-function copy_all_holdings_account() {
-    var html_table_element = "table table--hoverable table--primary table__body--primary pc-holdings-grid qa-datagrid-rows centi  table--actionable";
-    let temp = document.createElement('textarea');
-    document.body.appendChild(temp);
-    var holdings = get_table_holdings(html_table_element);
-    temp.value = convert_holdings_to_json(holdings);
-    temp.select();
-    document.execCommand('copy');
-    temp.remove();
-}
-
-function create_single_account_copy_button() {
-    add_copy_button(copy_single_holdings_account)
-}
-
-function create_all_account_copy_button() {
-    add_copy_button(copy_all_holdings_account)
-}
-
 waitForKeyElements (
     "#accountDetails > div > div.appTemplate > div.datagridSection > div > div:nth-child(1) > div > div > div > label",
-    create_single_account_copy_button,
-    false
-);
-
-waitForKeyElements (
-    "#holdings > div > div.gridFrame.offset > div > div:nth-child(1) > div.pc-search-input.pc-u-pl- > div > div > label",
-    create_all_account_copy_button,
+    add_copy_button,
     false
 );
