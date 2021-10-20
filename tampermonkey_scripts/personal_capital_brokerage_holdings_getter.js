@@ -120,10 +120,51 @@ function set_to_clipboard(text) {
     temp.remove();
 }
 
-function copy() {
+async function get_account_id() {
+
+    let accountName = document.querySelector("#accountDetails > div > div.appTemplate > div.detailsSection > div > div.nav-secondary.js-secondary-nav > div:nth-child(2) > div.account-details-account-name.js-account-details-account-name.js-closed-text").textContent;
+    console.log("accountName found on html page: " + accountName);
+
+    let data = 'lastServerChangeId=-1&csrf=' + csrf + '&apiClient=WEB'
+    console.log(data);
+		let user_account_id
+    await GM.xmlHttpRequest({
+        method: "POST",
+        url: "https://home.personalcapital.com/api/newaccount/getAccounts2",
+        data: data,
+        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        onload: function(response) {
+            console.log("Getting account id:");
+            console.log(response.responseText);
+
+            var accounts = JSON.parse(response.responseText);
+            for (const account of accounts["spData"]["accounts"]) {
+                console.log("account name key: " + account["name"] + " account id: " + account["userAccountId"]);
+                if(accountName == account["name"]) {
+                  user_account_id = account["userAccountId"];
+                  break;
+                }
+            }
+
+            console.log("Done Getting account id");
+            console.log("final user account id: " + user_account_id);
+        }
+    });
+
+    return user_account_id
+
+}
+
+
+async function copy() {
+
+    let account_id = await get_account_id()
+    console.log("user account id tmp: " + account_id);
 
 //    let data = 'lastServerChangeId=-1&csrf=' + csrf + '&apiClient=WEB'
-    let data = 'userAccountIds=%5B79701341%5D&' + 'lastServerChangeId=-1&csrf=' + csrf + '&apiClient=WEB'
+//    let data = 'userAccountIds=%5B79701341%5D&' + 'lastServerChangeId=-1&csrf=' + csrf + '&apiClient=WEB'
+    let data = 'userAccountIds=%5B' + account_id + '%5D&' + 'lastServerChangeId=-1&csrf=' + csrf + '&apiClient=WEB'
+
     console.log(data);
     GM.xmlHttpRequest({
         method: "POST",
@@ -140,6 +181,7 @@ function copy() {
 }
 
 function add_copy_button() {
+
     let searchObj = document.getElementsByClassName("pc-input-group  pc-input-group--with-prefix")[0];
     let btn = document.createElement("button");
     btn.innerHTML = "Copy Holdings";
