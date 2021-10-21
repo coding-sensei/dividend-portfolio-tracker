@@ -155,9 +155,21 @@ async function get_account_id() {
 
 }
 
+function add_copy_button(function_call_on_click) {
+      let searchObj = document.getElementsByClassName("pc-input-group  pc-input-group--with-prefix")[0];
+      let btn = document.createElement("button");
+      btn.innerHTML = "Copy Holdings";
+      btn.className = "copyBtn";
+      btn.onclick = () => {
+                function_call_on_click()
+                alert("Finished copying");
+            }
+      console.log(searchObj);
 
-async function copy() {
+      searchObj.insertBefore(btn, searchObj[0]);
+}
 
+async function copy_single_holdings_account() {
     let account_id = await get_account_id()
     console.log("user account id tmp: " + account_id);
 
@@ -177,25 +189,35 @@ async function copy() {
             alert("Finished copying");
         }
     });
-
 }
 
-function add_copy_button() {
+function copy_all_holdings_account() {
+      var html_table_element = "table table--hoverable table--primary table__body--primary pc-holdings-grid qa-datagrid-rows centi  table--actionable";
+      let temp = document.createElement('textarea');
+      document.body.appendChild(temp);
+      var holdings = get_table_holdings(html_table_element);
+      temp.value = convert_holdings_to_json(holdings);
+      temp.select();
+      document.execCommand('copy');
+      temp.remove();
+}
 
-    let searchObj = document.getElementsByClassName("pc-input-group  pc-input-group--with-prefix")[0];
-    let btn = document.createElement("button");
-    btn.innerHTML = "Copy Holdings";
-    btn.className = "copyBtn";
-    btn.onclick = () => {
-        copy();
-    }
-    console.log(searchObj);
+function create_single_account_copy_button() {
+      add_copy_button(copy_single_holdings_account)
+}
 
-    searchObj.insertBefore(btn, searchObj[0]);
+function create_all_account_copy_button() {
+      add_copy_button(copy_all_holdings_account)
 }
 
 waitForKeyElements (
-    "#accountDetails > div > div.appTemplate > div.datagridSection > div > div:nth-child(1) > div > div > div > label",
-    add_copy_button,
-    false
+      "#accountDetails > div > div.appTemplate > div.datagridSection > div > div:nth-child(1) > div > div > div > label",
+      create_single_account_copy_button,
+      false
+);
+
+waitForKeyElements (
+      "#holdings > div > div.gridFrame.offset > div > div:nth-child(1) > div.pc-search-input.pc-u-pl- > div > div > label",
+      create_all_account_copy_button,
+      false
 );
