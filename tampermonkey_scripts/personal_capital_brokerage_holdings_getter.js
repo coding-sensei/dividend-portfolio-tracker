@@ -68,6 +68,24 @@ async function get_account_id() {
 
 }
 
+async function get_all_selected_account_ids() {
+    accounts = jQuery('ul[class="menu menu--vertical menu--bordered menu--tiny js-account-selector-menu menu--right"] li').find(":checkbox")
+
+    var account_id_list = [];
+    accounts.each(function( index, element ) {
+        console.log( index + ": checked: " + element.checked + " value: " + element.value );
+        if(!isNaN(element.value) && element.checked) {
+          console.log( "Is an account using: " + element.value + "\n");
+          account_id_list.push(element.value);
+        }
+    });
+
+    console.log("account id list");
+    console.log(account_id_list);
+    return account_id_list
+
+}
+
 function add_copy_button(function_call_on_click) {
       let searchObj = document.getElementsByClassName("pc-input-group  pc-input-group--with-prefix")[0];
       let btn = document.createElement("button");
@@ -104,12 +122,24 @@ async function copy_single_holdings_account() {
 }
 
 async function copy_all_holdings_account() {
-    let account_id = await get_account_id()
-    console.log("user account id tmp: " + account_id);
+    let account_ids = await get_all_selected_account_ids()
+    console.log("user account id tmp: ");
+    console.log(account_ids);
 
 //    let data = 'lastServerChangeId=-1&csrf=' + csrf + '&apiClient=WEB'
 //    let data = 'userAccountIds=%5B79701341%5D&' + 'lastServerChangeId=-1&csrf=' + csrf + '&apiClient=WEB'
-    let data = 'userAccountIds=%5B' + account_id + '%5D&' + 'lastServerChangeId=-1&csrf=' + csrf + '&apiClient=WEB'
+    let data = 'consolidateMultipleAccounts=true' + '&userAccountIds=%5B' + account_ids.join('%2C') + '%5D&' + 'lastServerChangeId=-1&csrf=' + csrf + '&apiClient=WEB'
+    console.log("data being sent: " + data);
+
+//classificationStyles=%5B%22none%22%5D&consolidateMultipleAccounts=true&userAccountIds=%5B79701341%2C79701347%5D&lastServerChangeId=175&csrf=2feb1904-7b40-49ce-b6df-44276fd024ee&apiClient=WEB
+//
+//  classificationStyles: ["none"]
+//  consolidateMultipleAccounts: true
+//  userAccountIds: [79701341,79701347]
+//  lastServerChangeId: 175
+//  csrf: 2feb1904-7b40-49ce-b6df-44276fd024ee
+//  apiClient: WEB
+
 
     console.log(data);
     GM.xmlHttpRequest({
