@@ -4,6 +4,7 @@ var DIVIDEND_SHEET_NAME = "latest_dividends";
 var HOLDINGS_SHEET_NAME = "Holdings";
 var SETTINGS_SHEET_NAME = "Settings";
 
+
 function initMenu() {
   var ui = SpreadsheetApp.getUi();
   var menu = ui.createMenu("Portfolio Tools");
