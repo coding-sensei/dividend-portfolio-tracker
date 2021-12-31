@@ -40,7 +40,7 @@ async function get_account_id() {
 
     let data = 'lastServerChangeId=-1&csrf=' + csrf + '&apiClient=WEB'
     console.log(data);
-		let user_account_id
+    let user_account_id
     await GM.xmlHttpRequest({
         method: "POST",
         url: "https://home.personalcapital.com/api/newaccount/getAccounts2",
