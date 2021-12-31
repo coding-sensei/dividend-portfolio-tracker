@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Personal Capital Holdings Getter Requests (Testing)
+// @name         Personal Capital Holdings Getter
 // @namespace    http://tampermonkey.net/
-// @version      1.0
-// @description  This will create a button on the holdings tab so that the current positions can be copied to the clipboard as JSON for easy import to GoogleSheets or any other program!
+// @version      2.0
+// @description  This will create a button on the holdings tab so that the current positions (using Requests) can be copied to the clipboard as JSON for easy import to GoogleSheets or any other program!
 // @author       Coding Sensei
 // @include      /^https://home\.personalcapital\.com/page/login/app*/
 // @require      http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js
@@ -103,8 +103,6 @@ async function copy_single_holdings_account() {
     let account_id = await get_account_id()
     console.log("user account id tmp: " + account_id);
 
-//    let data = 'lastServerChangeId=-1&csrf=' + csrf + '&apiClient=WEB'
-//    let data = 'userAccountIds=%5B79701341%5D&' + 'lastServerChangeId=-1&csrf=' + csrf + '&apiClient=WEB'
     let data = 'userAccountIds=%5B' + account_id + '%5D&' + 'lastServerChangeId=-1&csrf=' + csrf + '&apiClient=WEB'
 
     console.log(data);
@@ -126,20 +124,8 @@ async function copy_all_holdings_account() {
     console.log("user account id tmp: ");
     console.log(account_ids);
 
-//    let data = 'lastServerChangeId=-1&csrf=' + csrf + '&apiClient=WEB'
-//    let data = 'userAccountIds=%5B79701341%5D&' + 'lastServerChangeId=-1&csrf=' + csrf + '&apiClient=WEB'
     let data = 'consolidateMultipleAccounts=true' + '&userAccountIds=%5B' + account_ids.join('%2C') + '%5D&' + 'lastServerChangeId=-1&csrf=' + csrf + '&apiClient=WEB'
     console.log("data being sent: " + data);
-
-//classificationStyles=%5B%22none%22%5D&consolidateMultipleAccounts=true&userAccountIds=%5B79701341%2C79701347%5D&lastServerChangeId=175&csrf=2feb1904-7b40-49ce-b6df-44276fd024ee&apiClient=WEB
-//
-//  classificationStyles: ["none"]
-//  consolidateMultipleAccounts: true
-//  userAccountIds: [79701341,79701347]
-//  lastServerChangeId: 175
-//  csrf: 2feb1904-7b40-49ce-b6df-44276fd024ee
-//  apiClient: WEB
-
 
     console.log(data);
     GM.xmlHttpRequest({

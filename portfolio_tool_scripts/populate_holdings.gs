@@ -11,10 +11,10 @@ function populate_holdings() {
   var latest_div_data = get_latest_dividends_data();
 
   Logger.log("Holdings:");
-//  Logger.log(holdings);
+  Logger.log(holdings);
 
   Logger.log("latest_div_data:");
-//  Logger.log(latest_div_data);
+  Logger.log(latest_div_data);
 
   for (var i=0; i < holdings.length; i++) {
     ticker_name = holdings[i]["ticker"];
@@ -47,7 +47,6 @@ function populate_holdings() {
   var ws = get_sheet_object(HOLDINGS_SHEET_NAME);
   ws.getRange("A:AI").clear();
 
-  //var headerRow = Object.keys(holdings[0]);
   var headerRow = ['Ticker', 'Shares', 'Price', 'Value', 'Cost Basis', 'Cost Basis Per Share', 'Yield On Cost', 'Dividend Yield', 'Annual Payout', 'Dividend Amount', 'Projected Payout', 'Dividend Suspended', 'Holding %']
   Logger.log(headerRow);
   ws.appendRow(headerRow);
@@ -73,10 +72,6 @@ function populate_holdings() {
     var row = headerRow.map(function(key){ return dict[key]});
     ws.appendRow(row);
   }
-
-  //Set columns to currency format
-  //var columns = ws.getRange(2,3, ws.getRange("C2").getDataRegion().getLastRow(), ws.getRange("C2").getDataRegion().getLastColumn());
-  //columns.setNumberFormat("$#,##0.00;$(#,##0.00)");
 
 }
 
