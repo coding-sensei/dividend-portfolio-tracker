@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         Personal Capital Holdings Getter
 // @namespace    http://tampermonkey.net/
-// @version      1.1.1
-// @description  This will create a button on the holdings tab so that the current positions can be copied to the clipboard as JSON for easy import to GoogleSheets or any other program!
+// @version      2.0
+// @description  This will create a button on the holdings tab so that the current positions (using Requests) can be copied to the clipboard as JSON for easy import to GoogleSheets or any other program!
 // @author       Coding Sensei
 // @include      /^https://home\.personalcapital\.com/page/login/app*/
 // @require      http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
-// @grant        none
+// @grant        GM.xmlHttpRequest
 // ==/UserScript==
 
 
@@ -24,121 +24,139 @@ s.type = "text/css";
 s.innerHTML = styleSheet;
 (document.head || document.documentElement).appendChild(s);
 
-
-function get_list_of_headers(headers_data) {
-    var all_headers = [];
-    for (const header of headers_data.childNodes) {
-        all_headers.push(header.text);
-    }
-
-    return all_headers
+function set_to_clipboard(text) {
+    let temp = document.createElement('textarea');
+    document.body.appendChild(temp);
+    temp.value = text;
+    temp.select();
+    document.execCommand('copy');
+    temp.remove();
 }
 
-function populate_ticker_map(headers, ticker_data) {
-    var info = new Map();
+async function get_account_id() {
 
-    for (const data of ticker_data.childNodes) {
-        var text = data.childNodes[0].textContent;
-        info.set(headers.shift(), text);
-    }
+    let accountName = document.querySelector("#accountDetails > div > div.appTemplate > div.detailsSection > div > div.nav-secondary.js-secondary-nav > div:nth-child(2) > div.account-details-account-name.js-account-details-account-name.js-closed-text").textContent;
+    console.log("accountName found on html page: " + accountName);
 
-    return info
+    let data = 'lastServerChangeId=-1&csrf=' + csrf + '&apiClient=WEB'
+    console.log(data);
+    let user_account_id
+    await GM.xmlHttpRequest({
+        method: "POST",
+        url: "https://home.personalcapital.com/api/newaccount/getAccounts2",
+        data: data,
+        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        onload: function(response) {
+            console.log("Getting account id:");
+            console.log(response.responseText);
+
+            var accounts = JSON.parse(response.responseText);
+            for (const account of accounts["spData"]["accounts"]) {
+                console.log("account name key: " + account["name"] + " account id: " + account["userAccountId"]);
+                if(accountName == account["name"]) {
+                  user_account_id = account["userAccountId"];
+                  break;
+                }
+            }
+
+            console.log("Done Getting account id");
+            console.log("final user account id: " + user_account_id);
+        }
+    });
+
+    return user_account_id
+
 }
 
-function get_table_holdings(class_name_element) {
+async function get_all_selected_account_ids() {
+    accounts = jQuery('ul[class="menu menu--vertical menu--bordered menu--tiny js-account-selector-menu menu--right"] li').find(":checkbox")
 
-    let holdingsTable = document.getElementsByClassName(class_name_element)[0];
+    var account_id_list = [];
+    accounts.each(function( index, element ) {
+        console.log( index + ": checked: " + element.checked + " value: " + element.value );
+        if(!isNaN(element.value) && element.checked) {
+          console.log( "Is an account using: " + element.value + "\n");
+          account_id_list.push(element.value);
+        }
+    });
 
-    console.log(holdingsTable);
+    console.log("account id list");
+    console.log(account_id_list);
+    return account_id_list
 
-    var headers = get_list_of_headers(holdingsTable.childNodes[0]);
-    let rows = holdingsTable.childNodes[1];
-    let summary = holdingsTable.childNodes[2];
-
-
-    var holdings = [];
-
-    for (const row of rows.childNodes) {
-        var ticker_map = populate_ticker_map(headers.slice(0), row);
-        holdings.push(ticker_map);
-    }
-
-    console.log(holdings);
-    console.log(convert_holdings_to_json(holdings));
-
-    return holdings
-}
-
-function mapToObj (map) {
-    return [...map].reduce((acc, val) => {
-        acc[val[0]] = val[1];
-        return acc;
-    }, {});
-}
-
-function convert_holdings_to_json(positions) {
-    var json_holdings = {
-        holdings:[]
-    };
-    for (const stock of positions) {
-        json_holdings.holdings.push(mapToObj(stock));
-    }
-
-    return JSON.stringify(json_holdings)
 }
 
 function add_copy_button(function_call_on_click) {
-    let searchObj = document.getElementsByClassName("pc-input-group  pc-input-group--with-prefix")[0];
-    let btn = document.createElement("button");
-    btn.innerHTML = "Copy Holdings";
-    btn.className = "copyBtn";
-    btn.onclick = () => {
-        function_call_on_click()
-        alert("Finished copying");
-    }
-    console.log(searchObj);
+      let searchObj = document.getElementsByClassName("pc-input-group  pc-input-group--with-prefix")[0];
+      let btn = document.createElement("button");
+      btn.innerHTML = "Copy Holdings";
+      btn.className = "copyBtn";
+      btn.onclick = () => {
+                function_call_on_click()
+            }
+      console.log(searchObj);
 
-    searchObj.insertBefore(btn, searchObj[0]);
+      searchObj.insertBefore(btn, searchObj[0]);
 }
 
-function copy_single_holdings_account() {
-    var html_table_element = "table table--hoverable table--primary table__body--primary pc-holdings-grid qa-datagrid-rows centi pc-holdings-grid--account-details table--actionable";
-    let temp = document.createElement('textarea');
-    document.body.appendChild(temp);
-    var holdings = get_table_holdings(html_table_element);
-    temp.value = convert_holdings_to_json(holdings);
-    temp.select();
-    document.execCommand('copy');
-    temp.remove();
+async function copy_single_holdings_account() {
+    let account_id = await get_account_id()
+    console.log("user account id tmp: " + account_id);
+
+    let data = 'userAccountIds=%5B' + account_id + '%5D&' + 'lastServerChangeId=-1&csrf=' + csrf + '&apiClient=WEB'
+
+    console.log(data);
+    GM.xmlHttpRequest({
+        method: "POST",
+        url: "https://home.personalcapital.com/api/invest/getHoldings",
+        data: data,
+        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        onload: function(response) {
+            console.log(response.responseText);
+            set_to_clipboard(response.responseText);
+            alert("Finished copying");
+        }
+    });
 }
 
-function copy_all_holdings_account() {
-    var html_table_element = "table table--hoverable table--primary table__body--primary pc-holdings-grid qa-datagrid-rows centi  table--actionable";
-    let temp = document.createElement('textarea');
-    document.body.appendChild(temp);
-    var holdings = get_table_holdings(html_table_element);
-    temp.value = convert_holdings_to_json(holdings);
-    temp.select();
-    document.execCommand('copy');
-    temp.remove();
+async function copy_all_holdings_account() {
+    let account_ids = await get_all_selected_account_ids()
+    console.log("user account id tmp: ");
+    console.log(account_ids);
+
+    let data = 'consolidateMultipleAccounts=true' + '&userAccountIds=%5B' + account_ids.join('%2C') + '%5D&' + 'lastServerChangeId=-1&csrf=' + csrf + '&apiClient=WEB'
+    console.log("data being sent: " + data);
+
+    console.log(data);
+    GM.xmlHttpRequest({
+        method: "POST",
+        url: "https://home.personalcapital.com/api/invest/getHoldings",
+        data: data,
+        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        onload: function(response) {
+            console.log(response.responseText);
+            set_to_clipboard(response.responseText);
+            alert("Finished copying");
+        }
+    });
 }
 
 function create_single_account_copy_button() {
-    add_copy_button(copy_single_holdings_account)
+      add_copy_button(copy_single_holdings_account)
 }
 
 function create_all_account_copy_button() {
-    add_copy_button(copy_all_holdings_account)
+      add_copy_button(copy_all_holdings_account)
 }
 
 waitForKeyElements (
-    "#accountDetails > div > div.appTemplate > div.datagridSection > div > div:nth-child(1) > div > div > div > label",
-    create_single_account_copy_button,
-    false
+      "#accountDetails > div > div.appTemplate > div.datagridSection > div > div:nth-child(1) > div > div > div > label",
+      create_single_account_copy_button,
+      false
 );
 
 waitForKeyElements (
-    "#holdings > div > div.gridFrame.offset > div > div:nth-child(1) > div.pc-search-input.pc-u-pl- > div > div > label",
-    create_all_account_copy_button,
-    false
+      "#holdings > div > div.gridFrame.offset > div > div:nth-child(1) > div.pc-search-input.pc-u-pl- > div > div > label",
+      create_all_account_copy_button,
+      false
 );
