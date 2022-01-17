@@ -38,23 +38,31 @@ Setup Projected Annual Income Table
 
 For Annual Dividend Income
 
-`=SUMIF(Holdings!J2:J,"FALSE",Holdings!I2:I)`
+`=SUMIF(Holdings!L2:L,"FALSE",Holdings!K2:K)`
 
 For Monthly Average Dividend Income
 
-`=AnnualIncomeResult/12` or `=SUMIF(Holdings!J2:J,"FALSE",Holdings!I2:I)/12`
+`=AnnualIncomeResult/12` or `=SUMIF(Holdings!L2:L,"FALSE",Holdings!K2:K)/12`
 
 For Weekly Average Dividend Income
 
-`=AnnualIncomeResult/52` or `=SUMIF(Holdings!J2:J,"FALSE",Holdings!I2:I)/52`
+`=AnnualIncomeResult/52` or `=SUMIF(Holdings!L2:L,"FALSE",Holdings!K2:K)/52`
 
 For Daily Average Dividend Income
 
-`=AnnualIncomeResult/365` or `=SUMIF(Holdings!J2:J,"FALSE",Holdings!I2:I)/365`
+`=AnnualIncomeResult/365` or `=SUMIF(Holdings!L2:L,"FALSE",Holdings!K2:K)/365`
 
 For Hourly Average Dividend Income
 
-`=AnnualIncomeResult/8760` or `=SUMIF(Holdings!J2:J,"FALSE",Holdings!I2:I)/8760`
+`=AnnualIncomeResult/8760` or `=SUMIF(Holdings!L2:L,"FALSE",Holdings!K2:K)/8760`
+
+For Portfolio's Dividend Yield On Cost
+
+`=AnnualIncomeResult/SUM(Holdings!E2:E)` or `=SUMIF(Holdings!L2:L,"FALSE",Holdings!K2:K)/SUM(Holdings!E2:E)`
+
+For Portfolio's Dividend Yield
+
+`=AnnualIncomeResult/SUM(Holdings!D2:D)` or `=SUMIF(Holdings!L2:L,"FALSE",Holdings!K2:K)/SUM(Holdings!D2:D)`
 
 ## utilities.gs
 
