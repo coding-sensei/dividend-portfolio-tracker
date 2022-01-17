@@ -56,6 +56,10 @@ For Hourly Average Dividend Income
 
 `=AnnualIncomeResult/8760` or `=SUMIF(Holdings!L2:L,"FALSE",Holdings!K2:K)/8760`
 
+For 40 Hourly Work Wage Income
+
+`=AnnualIncomeResult/2080` or `=SUMIF(Holdings!L2:L,"FALSE",Holdings!K2:K)/2080`
+
 For Portfolio's Dividend Yield On Cost
 
 `=AnnualIncomeResult/SUM(Holdings!E2:E)` or `=SUMIF(Holdings!L2:L,"FALSE",Holdings!K2:K)/SUM(Holdings!E2:E)`
