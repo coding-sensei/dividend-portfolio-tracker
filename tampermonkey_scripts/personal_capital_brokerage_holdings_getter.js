@@ -33,6 +33,29 @@ function set_to_clipboard(text) {
     temp.remove();
 }
 
+function create_filtered_holdings(holdingsText) {
+    var filteredHoldings = {"holdings": []};
+    var unfilteredHoldings = JSON.parse(holdingsText);
+    for (const holding of unfilteredHoldings["spData"]["holdings"]) {
+        var stock = {
+            "quantity": holding["quantity"],
+			"costBasis": holding["costBasis"],
+			"price": holding["price"],
+			"holdingPercentage": holding["holdingPercentage"],
+			"ticker": holding["ticker"],
+			"value": holding["value"],
+			"accountName": holding["accountName"],
+			"holdingType": holding["holdingType"],
+			"userAccountId": holding["userAccountId"],
+			"exchange": holding["exchange"],
+        };
+        filteredHoldings["holdings"].push(stock);
+    }
+
+    return JSON.stringify(filteredHoldings);
+
+}
+
 async function get_account_id() {
 
     let accountName = document.querySelector("#accountDetails > div > div.appTemplate > div.detailsSection > div > div.nav-secondary.js-secondary-nav > div:nth-child(2) > div.account-details-account-name.js-account-details-account-name.js-closed-text").textContent;
@@ -113,7 +136,7 @@ async function copy_single_holdings_account() {
         headers: {"Content-Type": "application/x-www-form-urlencoded"},
         onload: function(response) {
             console.log(response.responseText);
-            set_to_clipboard(response.responseText);
+            set_to_clipboard(create_filtered_holdings(response.responseText));
             alert("Finished copying");
         }
     });
@@ -135,7 +158,7 @@ async function copy_all_holdings_account() {
         headers: {"Content-Type": "application/x-www-form-urlencoded"},
         onload: function(response) {
             console.log(response.responseText);
-            set_to_clipboard(response.responseText);
+            set_to_clipboard(create_filtered_holdings(response.responseText));
             alert("Finished copying");
         }
     });
