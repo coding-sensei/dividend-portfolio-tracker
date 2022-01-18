@@ -2,7 +2,7 @@ function populate_holdings() {
   Logger.log("Populating Holdings")
 
   var settings = get_settings();
-  var holdings = JSON.parse(settings["Portfolio Holdings"])["spData"]["holdings"];
+  var holdings = JSON.parse(settings["Portfolio Holdings"])["holdings"];
 
   var excluded_holdings = settings["Dividend Suspended Holdings"].split(',');
   Logger.log("Holdings to exclude:");
