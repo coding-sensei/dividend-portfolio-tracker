@@ -4,7 +4,7 @@
 // @version      1.0.0
 // @description  This will create a button so that it can add up all of the dividends in the activity window!
 // @author       Coding Sensei
-// @include      /^https://dashboard\.m1finance\.com/d/invest/activity
+// @include      /^https://dashboard\.m1\.com/d/invest/activity
 // @require      http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
 // @grant        none
@@ -121,5 +121,3 @@ waitForKeyElements (
     create_calc_button,
     false
 );
-
-
