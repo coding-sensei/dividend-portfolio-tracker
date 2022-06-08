@@ -89,7 +89,7 @@ function get_total_dividends_from_activities(activities) {
         }
     }
 
-    return sum
+    return sum.toFixed(2)
 }
 
 function calculate_dividend_amount() {
@@ -100,7 +100,7 @@ function calculate_dividend_amount() {
 }
 
 function add_calc_button(function_call_on_click) {
-    let searchObj = document.getElementsByClassName("style__filterCol__vGxVW style__root__15AZ1 style__sm8__1y6nR style__xs12__2rudP")[0];
+    let searchObj = document.getElementsByClassName("style__filterCol__3jlef style__root__15AZ1 style__sm8__1y6nR style__xs12__2rudP")[0];
     let btn = document.createElement("button");
     btn.innerHTML = "Calculate Dividends";
     btn.className = "copyBtn";
@@ -117,7 +117,7 @@ function create_calc_button() {
 }
 
 waitForKeyElements (
-    "#root > div > div > div > div:nth-child(2) > div > div.style__root__2dfkG.style__constrain__-PeaO > div:nth-child(2) > div > div",
+    "#root > div > div > div > div:nth-child(2) > div > div.style__root__2dfkG.style__constrain__-PeaO > div.style__root__2dfkG.style__constrain__-PeaO",
     create_calc_button,
     false
 );
