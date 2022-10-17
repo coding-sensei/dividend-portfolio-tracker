@@ -10,7 +10,6 @@
 // @grant        GM.xmlHttpRequest
 // ==/UserScript==
 
-console.log("testing script");
 let styleSheet = `
 .copyBtn {
     background-color: green;
