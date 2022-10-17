@@ -10,7 +10,7 @@
 // @grant        GM.xmlHttpRequest
 // ==/UserScript==
 
-
+console.log("testing script");
 let styleSheet = `
 .copyBtn {
     background-color: green;
@@ -76,7 +76,7 @@ async function get_account_id() {
             var accounts = JSON.parse(response.responseText);
             for (const account of accounts["spData"]["accounts"]) {
                 console.log("account name key: " + account["name"] + " account id: " + account["userAccountId"]);
-                if(accountName == account["name"]) {
+                if(accountName === account["name"]) {
                   user_account_id = account["userAccountId"];
                   break;
                 }
@@ -110,7 +110,7 @@ async function get_all_selected_account_ids() {
 }
 
 function add_copy_button(function_call_on_click) {
-      let searchObj = document.getElementsByClassName("pc-input-group  pc-input-group--with-prefix")[0];
+      let searchObj = document.getElementsByClassName("pc-input-group  ")[0];
       let btn = document.createElement("button");
       btn.innerHTML = "Copy Holdings";
       btn.className = "copyBtn";
@@ -173,13 +173,13 @@ function create_all_account_copy_button() {
 }
 
 waitForKeyElements (
-      "#accountDetails > div > div.appTemplate > div.datagridSection > div > div:nth-child(1) > div > div > div > label",
+      "#accountDetails > div > div.appTemplate > div.datagridSection > div > div.holdings-grid-table-client-container.tabular-numbers.js-holdings-grid-table-container > div",
       create_single_account_copy_button,
       false
 );
 
 waitForKeyElements (
-      "#holdings > div > div.gridFrame.offset > div > div:nth-child(1) > div.pc-search-input.pc-u-pl- > div > div > label",
+      "#holdings > div > div.gridFrame.offset > div > div.holdings-grid-default-header > div.holdings-grid-table__groupBy-container.qa-holdings-grid-groupBy.pc-u-ml-",
       create_all_account_copy_button,
       false
 );
