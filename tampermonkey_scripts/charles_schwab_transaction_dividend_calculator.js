@@ -4,7 +4,7 @@
 // @version      1.0.0
 // @description  This will create a button so that it can add up all of the dividends in the transaction window!
 // @author       Coding Sensei
-// @include      https://client.schwab.com/*
+// @include      https://client.schwab.com/app/accounts/transactionhistory/*
 // @require      http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
 // @grant        none
