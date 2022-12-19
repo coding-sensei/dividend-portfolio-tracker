@@ -34,18 +34,6 @@ function get_dividends(tickers) {
 function get_token() {
   var response = UrlFetchApp.fetch("https://seekingalpha.com/market_data/xignite_token");
   return JSON.parse(response.getContentText());
-/*
-  var ui = SpreadsheetApp.getUi();
-  var result = ui.prompt("Please enter the output from:\n\nhttps://seekingalpha.com/market_data/xignite_token\n\n");
-  //Get the button that the user pressed.
-  var button = result.getSelectedButton();
-  
-  if (button === ui.Button.OK) {
-    Logger.log("The user clicked the [OK] button.");
-    Logger.log(result.getResponseText());
-    return JSON.parse(result.getResponseText());
-  }
-*/
 }
 
 function get_tickers() {
