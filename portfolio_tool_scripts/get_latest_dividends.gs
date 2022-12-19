@@ -21,9 +21,11 @@ function get_dividends(tickers) {
 
   clear_sheet()
   create_header(tickers_with_payments[0]);
+  Logger.log("Upcoming payments");
+  Logger.log(tickers_with_payments);
   for (var i= 0; i < tickers_with_payments.length; i++) {
-    Logger.log("Upcoming payments");
-    Logger.log(tickers_with_payments);
+    Logger.log("Writing ticker data to sheet:");
+    Logger.log(tickers_with_payments[i]);
     write_to_sheet(tickers_with_payments[i]);
   }
 
@@ -32,6 +34,18 @@ function get_dividends(tickers) {
 function get_token() {
   var response = UrlFetchApp.fetch("https://seekingalpha.com/market_data/xignite_token");
   return JSON.parse(response.getContentText());
+/*
+  var ui = SpreadsheetApp.getUi();
+  var result = ui.prompt("Please enter the output from:\n\nhttps://seekingalpha.com/market_data/xignite_token\n\n");
+  //Get the button that the user pressed.
+  var button = result.getSelectedButton();
+  
+  if (button === ui.Button.OK) {
+    Logger.log("The user clicked the [OK] button.");
+    Logger.log(result.getResponseText());
+    return JSON.parse(result.getResponseText());
+  }
+*/
 }
 
 function get_tickers() {
@@ -65,7 +79,7 @@ function clear_sheet() {
 
 function create_header(ticker_data) {
   var ws = get_sheet_object(DIVIDEND_SHEET_NAME);
-  var headerRow = Object.keys(ticker_data.CashDividends[0]);
+  var headerRow = get_header_template();
   headerRow.unshift("Ticker");
   headerRow.push("Name");
   ws.appendRow(headerRow);
@@ -166,13 +180,19 @@ function write_to_sheet(json) {
     var json_cash_dividends = json.CashDividends;
     var ws = get_sheet_object(DIVIDEND_SHEET_NAME);
 
+    Logger.log("write_to_sheet name: " + name);
+    Logger.log(json_cash_dividends);
     for (var i = 0; i < json_cash_dividends.length; i++) {
-        var headerRow = Object.keys(json_cash_dividends[0]);
+        var headerRow = get_header_template();
+        Logger.log("headerRow: " + headerRow);
         var row = headerRow.map(function(key) {
             return json_cash_dividends[i][key]
         });
+        Logger.log("row: " + row);
         row.unshift(ticker);
+        Logger.log("unshift row: " + row);
         row.push(name);
+        Logger.log("push row: " + row);
         ws.appendRow(row);
     }
 
@@ -180,4 +200,19 @@ function write_to_sheet(json) {
     var columns = ws.getRange("L2:L");
     columns.setNumberFormat("$#,##0.00;$(#,##0.00)");
 
+}
+
+function get_header_template() {
+  template = ["DividendAmount",
+              "Currency",
+              "ExDate",
+              "PayDate",
+              "RecordDate",
+              "DeclaredDate",
+              "PaymentFrequency",
+              "Type",
+              "PreviousDividendAmount",
+              "PercentIncrease",
+              "AnnualPayout"]
+  return template
 }
