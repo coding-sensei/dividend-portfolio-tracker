@@ -30,6 +30,11 @@ This script will run on etoro.com/portfolio and place a grey `Copy Holdings` but
 When the button is clicked, the button will copy the holdings into JSON data to your clipboard which can then
 be pasted into the GoogleSheets or any other program that wants to use the JSON data.
 
+## charles_schwab_hide_account_information.js
+
+This script will run every few seconds trying to hide the account information on the Charles Schwab brokerage account.
+Just fill out the `replaceArry` list with the strings that you would like to hide. I provided an example in the script.
+
 ###Known issues:
 - Currency won't always calculate correct price
 - You'll not get holdings from people you're copying
